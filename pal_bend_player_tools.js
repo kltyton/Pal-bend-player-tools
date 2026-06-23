@@ -141,13 +141,15 @@
         version: "0.1.0",
         variant: "both",
         onload() {
+            const newProjectActionOptions = {
+                name: "PAL：新建玩家动画项目",
+                description: "使用内置 player_model.geo.json 创建可编辑玩家动画项目",
+                icon: "accessibility_new",
+                click: createPlayerProject
+            };
             actions = [
-                new Action("pal_bend_new_player_project", {
-                    name: "PAL：新建玩家动画项目",
-                    description: "使用内置 player_model.geo.json 创建可编辑玩家动画项目",
-                    icon: "accessibility_new",
-                    click: createPlayerProject
-                }),
+                new Action("pal_bend_new_player_project", newProjectActionOptions),
+                new Action("pal_bend_new_player_project_file", newProjectActionOptions),
                 new Action("pal_bend_import_animation", {
                     name: "PAL：导入 animations/emote 到玩家模型",
                     description: "导入 PAL bend animations 或 Emotecraft emote，并转换为 *_bend.rotation.x",
@@ -168,7 +170,9 @@
                     click: exportBuiltInGeo
                 })
             ];
-            actions.forEach(action => MenuBar.menus.tools.addAction(action));
+            MenuBar.menus.tools.addAction(actions[0]);
+            MenuBar.addAction(actions[1], "file.new");
+            actions.slice(2).forEach(action => MenuBar.menus.tools.addAction(action));
         },
         onunload() {
             actions.forEach(action => action.delete());

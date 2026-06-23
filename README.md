@@ -50,7 +50,13 @@ Windows 默认插件目录示例：
 C:\Users\<用户名>\AppData\Roaming\Blockbench\plugins
 ```
 
-安装后在 `Tools` 菜单里会出现：
+安装后在 `File > New` / `文件 > 新建` 菜单里会出现：
+
+```text
+PAL：新建玩家动画项目
+```
+
+同时在 `Tools` 菜单里会出现：
 
 ```text
 PAL：新建玩家动画项目

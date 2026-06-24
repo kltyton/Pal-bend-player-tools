@@ -35,8 +35,8 @@ left_item  -> left_arm_bend
 本项目默认使用同号 bend 约定：
 
 ```text
-player_model.geo helper rotation.x = PAL bend degrees
-PAL bend degrees = player_model.geo helper rotation.x
+player_model.geo helper rotation.x/y/z = PAL bend degrees x/y/z
+PAL bend degrees x/y/z = player_model.geo helper rotation.x/y/z
 ```
 
 Python 脚本里对应参数是 `--helper-sign 1`，这是默认值。只有你明确需要反向时才使用 `--helper-sign -1`。
@@ -108,24 +108,28 @@ PAL：导出内置 player_model.geo.json
 导入后会统一转换为 `player_model.geo` 可编辑格式，也就是：
 
 ```text
-right_arm.bend -> right_arm_bend.rotation.x
-left_arm.bend  -> left_arm_bend.rotation.x
-torso.bend     -> torso_bend.rotation.x
+right_arm.bend x/y/z -> right_arm_bend.rotation.x/y/z
+left_arm.bend x/y/z  -> left_arm_bend.rotation.x/y/z
+torso.bend x/y/z     -> torso_bend.rotation.x/y/z
 ```
 
 导入时插件会把 PAL / Emotecraft 的默认南向动画校正到当前 `player_model.geo` 的北向预览坐标：`rotation.x/y` 和 `bend` 会在导入时校正，导出时再镜像回 PAL 使用的方向；`position` 位移值会保持原始符号。
 
-注意：本插件只转换 `*_bend.rotation.x` 与 PAL 原生 `bend`。`*_bend.rotation.y/z` 和 PAL custom pivot / `model` / `parents` 不会导入或导出。
+导入龙核旧 animations 到普通 PAL 项目时，插件会先按龙核友好 rig 烘焙成平铺 PAL，再反向解烘焙回当前项目的本地父子轨道。导入平铺 PAL / emote 到带父子关系的玩家项目时，也会反向解烘焙回当前项目；已带 `*_bend` helper 的本地模型动画不会做这一步。
+
+注意：本插件会导入/导出 `*_bend.rotation.x/y/z` 与 PAL 原生 `bend`。只有 X 轴变化时仍导出原版 scalar / `post` X 格式；存在 Y/Z 旋转时导出 `[x, y, z]` 向量 bend，供 PlayerAnimationLibraryMoreRotation 使用。Emotecraft emote 仍只有单个 `bend` 字段，因此导出 emote 时只写 X 轴 bend。
 
 ### 导出动画
 
 导出时会先把当前 `player_model.geo` helper 动画转换为 PAL bend animations：
 
 ```text
-right_arm_bend.rotation.x -> right_arm.bend
-left_arm_bend.rotation.x  -> left_arm.bend
-torso_bend.rotation.x     -> torso.bend
+right_arm_bend.rotation.x/y/z -> right_arm.bend x/y/z
+left_arm_bend.rotation.x/y/z  -> left_arm.bend x/y/z
+torso_bend.rotation.x/y/z     -> torso.bend x/y/z
 ```
+
+导出前插件会按当前 Blockbench 项目的父子关系和 pivot，把 `body`、`torso`、`*_bend` 等父级继承烘焙进 PAL 的平铺骨骼轨道里；因此龙核玩家模型兼容版 / 龙核玩家模型版仍会导出为传统平铺 PAL 骨骼名。
 
 然后按选择导出：
 

@@ -11,6 +11,47 @@
         right_leg: "right_leg_bend",
         left_leg: "left_leg_bend"
     };
+    const PAL_TO_DRAGONCORE_BONES = {
+        body: "root",
+        torso_bend: "Body_Lower",
+        torso: "Body",
+        head: "Head",
+        right_arm: "Right_Arm",
+        right_arm_bend: "Right_Arm_Lower",
+        right_item: "Right_Hand",
+        left_arm: "Left_Arm",
+        left_arm_bend: "Left_Arm_Lower",
+        left_item: "Left_Hand",
+        right_leg: "Right_Leg",
+        right_leg_bend: "Right_Leg_Lower",
+        left_leg: "Left_Leg",
+        left_leg_bend: "Left_Leg_Lower"
+    };
+    const EXACT_BONE_ALIASES = {
+        root: "body",
+        Root: "body",
+        Body_Lower: "torso_bend",
+        Body: "torso",
+        Head: "head",
+        Right_Arm: "right_arm",
+        Right_Arm_Lower: "right_arm_bend",
+        Right_Hand: "right_item",
+        Left_Arm: "left_arm",
+        Left_Arm_Lower: "left_arm_bend",
+        Left_Hand: "left_item",
+        Right_Leg: "right_leg",
+        Right_Leg_Lower: "right_leg_bend",
+        Left_Leg: "left_leg",
+        Left_Leg_Lower: "left_leg_bend",
+        bone: "right_item"
+    };
+    const NORMALIZED_BONE_ALIASES = {
+        root: "body",
+        body_lower: "torso_bend",
+        right_hand: "right_item",
+        left_hand: "left_item",
+        bone: "right_item"
+    };
     const DEFAULT_VALUES = {
         right_arm: [-5, 2, 0],
         left_arm: [5, 2, 0],
@@ -129,11 +170,32 @@
             }
         ]
     };
+    // Bone names stay in PAL/player_model.geo form; only parent/pivot mirrors the DragonCore-friendly reference rig.
+    const DRAGONCORE_COMPATIBLE_BONE_SETUP = {
+        body: {parent: null, pivot: [0, 0, 0]},
+        torso_bend: {parent: "body", pivot: [0, 12, 0]},
+        torso: {parent: "torso_bend", pivot: [0, 18, 0]},
+        head: {parent: "torso", pivot: [0, 24, 0]},
+        right_arm: {parent: "torso", pivot: [-6, 23, 0]},
+        right_arm_bend: {parent: "right_arm", pivot: [-6, 18, 0]},
+        right_item: {parent: "right_arm_bend", pivot: [-5.5, 13.25, -1]},
+        left_arm: {parent: "torso", pivot: [6, 23, 0]},
+        left_arm_bend: {parent: "left_arm", pivot: [6, 18, 0]},
+        left_item: {parent: "left_arm_bend", pivot: [5.5, 13.25, -1]},
+        right_leg: {parent: "body", pivot: [-2, 12, 0]},
+        right_leg_bend: {parent: "right_leg", pivot: [-2, 6, 0]},
+        left_leg: {parent: "body", pivot: [2, 12, 0]},
+        left_leg_bend: {parent: "left_leg", pivot: [2, 6, 0]}
+    };
+    const DRAGONCORE_COMPATIBLE_PLAYER_MODEL_GEO = makePlayerModelVariant(PLAYER_MODEL_GEO, DRAGONCORE_COMPATIBLE_BONE_SETUP);
+    const DRAGONCORE_PLAYER_MODEL_GEO = makePlayerModelVariant(PLAYER_MODEL_GEO, DRAGONCORE_COMPATIBLE_BONE_SETUP, PAL_TO_DRAGONCORE_BONES);
     const PLAYER_MODEL_TEXTURE_NAME = "player_model.geo.png";
     const PLAYER_MODEL_TEXTURE_DATA_URL = "data:image/png;base64,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";
 
     let actions = [];
     let palFormat = null;
+    let dragoncoreCompatibleFormat = null;
+    let dragoncoreFormat = null;
 
     Plugin.register(PLUGIN_ID, {
         title: "PAL Bend Player Tools",
@@ -141,11 +203,29 @@
         icon: "accessibility_new",
         description: "Edit PAL / Emotecraft player animations with player_model.geo helper bend bones.",
         tags: ["Animation", "Minecraft: Bedrock Edition"],
-        version: "0.1.0",
+        version: "0.3.0",
         variant: "both",
         onload() {
             registerPalFormat();
             actions = [
+                new Action("pal_bend_create_player_project", {
+                    name: "PAL：新建玩家动画项目",
+                    description: "使用原始 player_model.geo helper-bend 模型创建项目",
+                    icon: "accessibility_new",
+                    click: () => createPlayerProject()
+                }),
+                new Action("pal_bend_create_animation_friendly_project", {
+                    name: "PAL：新建玩家动画项目（龙核玩家模型兼容版）",
+                    description: "使用保持 PAL 骨骼名、但带龙核玩家模型父子继承和枢轴点的模型创建项目",
+                    icon: "account_tree",
+                    click: createDragoncoreCompatiblePlayerProject
+                }),
+                new Action("pal_bend_create_dragoncore_project", {
+                    name: "PAL：新建玩家动画项目（龙核玩家模型版）",
+                    description: "使用龙核玩家模型组名、父子继承和枢轴点创建项目，导入导出仍会转换为 PAL",
+                    icon: "accessibility_new",
+                    click: createDragoncorePlayerProject
+                }),
                 new Action("pal_bend_import_animation", {
                     name: "PAL：导入 animations/emote 到玩家模型",
                     description: "导入 PAL bend animations 或 Emotecraft emote，并转换为 *_bend.rotation.x",
@@ -166,9 +246,15 @@
                     click: exportBuiltInGeo
                 })
             ];
-            MenuBar.addAction(actions[0], "file.import");
-            MenuBar.addAction(actions[1], "file.export");
-            MenuBar.addAction(actions[2], "file.export");
+            MenuBar.addAction(getAction("pal_bend_create_player_project"), "file.new");
+            MenuBar.addAction(getAction("pal_bend_create_animation_friendly_project"), "file.new");
+            MenuBar.addAction(getAction("pal_bend_create_dragoncore_project"), "file.new");
+            MenuBar.addAction(getAction("pal_bend_create_player_project"), "tools");
+            MenuBar.addAction(getAction("pal_bend_create_animation_friendly_project"), "tools");
+            MenuBar.addAction(getAction("pal_bend_create_dragoncore_project"), "tools");
+            MenuBar.addAction(getAction("pal_bend_import_animation"), "file.import");
+            MenuBar.addAction(getAction("pal_bend_export_animation"), "file.export");
+            MenuBar.addAction(getAction("pal_bend_export_geo"), "file.export");
             attachAnimationPanelImportAction();
             setTimeout(attachAnimationPanelImportAction, 250);
         },
@@ -177,6 +263,10 @@
             actions = [];
             if (palFormat && typeof palFormat.delete === "function") palFormat.delete();
             palFormat = null;
+            if (dragoncoreCompatibleFormat && typeof dragoncoreCompatibleFormat.delete === "function") dragoncoreCompatibleFormat.delete();
+            dragoncoreCompatibleFormat = null;
+            if (dragoncoreFormat && typeof dragoncoreFormat.delete === "function") dragoncoreFormat.delete();
+            dragoncoreFormat = null;
         }
     });
 
@@ -184,13 +274,44 @@
         if (typeof ModelFormat !== "function") return;
         if (globalThis.Formats && Formats.pal_bend_player) {
             palFormat = Formats.pal_bend_player;
-            return;
+        } else {
+            palFormat = createPalModelFormat("pal_bend_player", {
+                icon: "accessibility_new",
+                name: "PAL Bend Player Animation",
+                description: "PlayerAnimationLibrary / Emotecraft player animation project with helper bend bones.",
+                create: createPlayerProject
+            });
         }
-        palFormat = new ModelFormat("pal_bend_player", {
-            id: "pal_bend_player",
-            icon: "accessibility_new",
-            name: "PAL Bend Player Animation",
-            description: "PlayerAnimationLibrary / Emotecraft player animation project with helper bend bones.",
+
+        if (globalThis.Formats && Formats.pal_bend_player_dragoncore_compatible) {
+            dragoncoreCompatibleFormat = Formats.pal_bend_player_dragoncore_compatible;
+        } else {
+            dragoncoreCompatibleFormat = createPalModelFormat("pal_bend_player_dragoncore_compatible", {
+                icon: "account_tree",
+                name: "PAL Bend Player Animation - 龙核玩家模型兼容版",
+                description: "PAL bone names with DragonCore player-model hierarchy and pivots.",
+                create: createDragoncoreCompatiblePlayerProject
+            });
+        }
+
+        if (globalThis.Formats && Formats.pal_bend_player_dragoncore) {
+            dragoncoreFormat = Formats.pal_bend_player_dragoncore;
+        } else {
+            dragoncoreFormat = createPalModelFormat("pal_bend_player_dragoncore", {
+                icon: "accessibility_new",
+                name: "PAL Bend Player Animation - 龙核玩家模型版",
+                description: "DragonCore player-model group names with PAL import/export conversion.",
+                create: createDragoncorePlayerProject
+            });
+        }
+    }
+
+    function createPalModelFormat(id, options) {
+        const format = new ModelFormat(id, {
+            id,
+            icon: options.icon || "accessibility_new",
+            name: options.name,
+            description: options.description,
             category: "minecraft",
             box_uv: false,
             single_texture: true,
@@ -203,14 +324,37 @@
             codec: globalThis.Codecs ? Codecs.project : undefined,
             animation_codec: globalThis.Codecs && Codecs.bedrock && Codecs.bedrock.format ? Codecs.bedrock.format.animation_codec : undefined
         });
-        palFormat.new = function() {
-            createPlayerProject();
+        format.new = function() {
+            options.create();
             return true;
         };
+        return format;
+    }
+
+    function makePlayerModelVariant(baseModel, boneSetup, renameMap = {}) {
+        const out = clone(baseModel);
+        const geometry = out["minecraft:geometry"] && out["minecraft:geometry"][0];
+        const bones = geometry && Array.isArray(geometry.bones) ? geometry.bones : [];
+        bones.forEach(bone => {
+            const setup = boneSetup[bone.name];
+            if (!setup) return;
+            if (setup.parent === null) delete bone.parent;
+            else if (setup.parent !== undefined) bone.parent = setup.parent;
+            if (setup.pivot) bone.pivot = clone(setup.pivot);
+        });
+        bones.forEach(bone => {
+            if (bone.parent && renameMap[bone.parent]) bone.parent = renameMap[bone.parent];
+            if (renameMap[bone.name]) bone.name = renameMap[bone.name];
+        });
+        return out;
+    }
+
+    function getAction(id) {
+        return actions.find(action => action && action.id === id);
     }
 
     function attachAnimationPanelImportAction() {
-        const importAction = actions[0];
+        const importAction = getAction("pal_bend_import_animation");
         if (!importAction || !globalThis.Toolbars || !Toolbars.animations || typeof Toolbars.animations.add !== "function") return false;
         const toolbar = Toolbars.animations;
         if (Array.isArray(toolbar.children) && toolbar.children.some(item => item === importAction || item === importAction.id || item && item.id === importAction.id)) return true;
@@ -223,24 +367,46 @@
         return true;
     }
 
-    function createPlayerProject() {
-        const content = prettyJson(PLAYER_MODEL_GEO);
+    function createDragoncoreCompatiblePlayerProject() {
+        createPlayerProject({
+            geometry: DRAGONCORE_COMPATIBLE_PLAYER_MODEL_GEO,
+            projectName: "player_model.geo 龙核兼容版",
+            fileName: "player_model.dragoncore_compatible.geo.json",
+            message: "已创建 player_model.geo 龙核玩家模型兼容版"
+        });
+    }
+
+    function createDragoncorePlayerProject() {
+        createPlayerProject({
+            geometry: DRAGONCORE_PLAYER_MODEL_GEO,
+            projectName: "player_model.geo 龙核玩家模型版",
+            fileName: "player_model.dragoncore.geo.json",
+            message: "已创建 player_model.geo 龙核玩家模型版"
+        });
+    }
+
+    function createPlayerProject(options = {}) {
+        const geometry = options.geometry || PLAYER_MODEL_GEO;
+        const projectName = options.projectName || "player_model.geo";
+        const fileName = options.fileName || "player_model.geo.json";
+        const message = options.message || "已创建 player_model.geo 玩家动画项目";
+        const content = prettyJson(geometry);
         try {
             if (canUseBedrockGeometryParser()) {
                 setupProject(Formats.bedrock);
-                Codecs.bedrock.parseGeometry({object: clone(PLAYER_MODEL_GEO["minecraft:geometry"][0])}, {
+                Codecs.bedrock.parseGeometry({object: clone(geometry["minecraft:geometry"][0])}, {
                     switch_to_existing_tab: false
                 });
                 if (isProjectObject()) {
-                    Project.name = "player_model.geo";
+                    Project.name = projectName;
                     Project.export_path = "";
                     Project.export_codec = "bedrock";
                 }
             } else if (globalThis.Codecs && Codecs.bedrock && typeof Codecs.bedrock.load === "function") {
-                Codecs.bedrock.load(clone(PLAYER_MODEL_GEO), {
+                Codecs.bedrock.load(clone(geometry), {
                     content,
-                    name: "player_model.geo.json",
-                    path: getVirtualPlayerModelPath(),
+                    name: fileName,
+                    path: getVirtualPlayerModelPath(fileName),
                     no_file: true
                 }, {
                     switch_to_existing_tab: false
@@ -248,18 +414,18 @@
             } else if (typeof loadModelFile === "function") {
                 loadModelFile({
                     content,
-                    name: "player_model.geo.json",
-                    path: getVirtualPlayerModelPath(),
+                    name: fileName,
+                    path: getVirtualPlayerModelPath(fileName),
                     no_file: true
                 });
             } else if (globalThis.Codecs && Codecs.bedrock && typeof Codecs.bedrock.parse === "function") {
                 ensureBedrockProject();
-                Codecs.bedrock.parse(JSON.parse(content), "player_model.geo.json", {});
+                Codecs.bedrock.parse(JSON.parse(content), fileName, {});
             } else {
-                createPlayerProjectFallback();
+                createPlayerProjectFallback(geometry, projectName);
             }
             queuePlayerTextureLoad();
-            Blockbench.showQuickMessage("已创建 player_model.geo 玩家动画项目", 1800);
+            Blockbench.showQuickMessage(message, 1800);
         } catch (error) {
             console.error(error);
             Blockbench.showMessageBox({
@@ -295,9 +461,9 @@
         return globalThis.Project && typeof Project === "object";
     }
 
-    function getVirtualPlayerModelPath() {
+    function getVirtualPlayerModelPath(fileName = "player_model.geo.json") {
         const separator = typeof osfs === "string" ? osfs : "/";
-        return `${Date.now()}${separator}player_model.geo.json`;
+        return `${Date.now()}${separator}${fileName}`;
     }
 
     function queuePlayerTextureLoad() {
@@ -381,19 +547,19 @@
         if (globalThis.Canvas && typeof Canvas.updateAll === "function") Canvas.updateAll();
     }
 
-    function createPlayerProjectFallback() {
+    function createPlayerProjectFallback(geometry = PLAYER_MODEL_GEO, projectName = "player_model.geo") {
         if (isProjectObject() && Formats && Formats.bedrock && typeof Formats.bedrock.select === "function") {
             Formats.bedrock.select();
         } else {
             ensureBedrockProject();
         }
         if (isProjectObject()) {
-            Project.name = "player_model.geo";
+            Project.name = projectName;
             Project.geometry_name = "geometry.unknown";
             Project.texture_width = 64;
             Project.texture_height = 64;
         }
-        const geometry = PLAYER_MODEL_GEO["minecraft:geometry"][0];
+        geometry = geometry["minecraft:geometry"][0];
         const groupMap = {};
         geometry.bones.forEach(bone => {
             const parent = bone.parent ? groupMap[bone.parent] : undefined;
@@ -454,6 +620,7 @@
                     showError("文件不是 emote JSON，也不是带 animations 字段的动画 JSON。");
                     return;
                 }
+                animationsJson = normalizeAnimationBoneNames(animationsJson);
                 const modelAnimations = mirrorFacingForBlockbench(convertToBendableModelFormat(animationsJson, {
                     keepPalBend: false,
                     helperSign: 1
@@ -530,7 +697,7 @@
             return;
         }
 
-        const modelAnimations = mirrorFacingForPal(compileAnimationsFromProject(animations));
+        const modelAnimations = mirrorFacingForPal(normalizeAnimationBoneNames(compileAnimationsFromProject(animations)));
         const palBendAnimations = modelAnimationsToPalBend(modelAnimations, {
             helperSign: 1,
             keepHelpers: false
@@ -794,6 +961,41 @@
             if (typeof animator.init === "function") animator.init();
         }
         return animator;
+    }
+
+    function normalizeAnimationBoneNames(data) {
+        const out = clone(data);
+        Object.values(out.animations || {}).forEach(animObj => {
+            const bones = animObj && animObj.bones;
+            if (!bones || typeof bones !== "object") return;
+            const normalizedBones = {};
+            Object.keys(bones).forEach(rawName => {
+                const boneName = getCorrectPlayerBoneName(rawName);
+                normalizedBones[boneName] = mergeBoneAnimation(normalizedBones[boneName], bones[rawName]);
+            });
+            animObj.bones = normalizedBones;
+        });
+        return out;
+    }
+
+    function mergeBoneAnimation(base, incoming) {
+        const out = base && typeof base === "object" ? clone(base) : {};
+        const source = incoming && typeof incoming === "object" ? incoming : {};
+        Object.keys(source).forEach(channel => {
+            if (out[channel] === undefined) out[channel] = clone(source[channel]);
+            else out[channel] = mergeTrackPayload(out[channel], source[channel]);
+        });
+        return out;
+    }
+
+    function mergeTrackPayload(base, incoming) {
+        if (!base || typeof base !== "object" || Array.isArray(base) || looksLikeSingleKeyframe(base)) {
+            return clone(incoming);
+        }
+        if (!incoming || typeof incoming !== "object" || Array.isArray(incoming) || looksLikeSingleKeyframe(incoming)) {
+            return clone(incoming);
+        }
+        return Object.assign({}, clone(base), clone(incoming));
     }
 
     function convertToBendableModelFormat(animationsJson, options = {}) {
@@ -1505,7 +1707,21 @@
     }
 
     function getCorrectPlayerBoneName(name) {
-        return String(name).replace(/([A-Z])/g, "_$1").toLowerCase();
+        const raw = String(name || "").trim();
+        if (EXACT_BONE_ALIASES[raw]) return EXACT_BONE_ALIASES[raw];
+        const normalized = normalizeBoneKey(raw);
+        return NORMALIZED_BONE_ALIASES[normalized] || normalized;
+    }
+
+    function normalizeBoneKey(name) {
+        return String(name || "")
+            .trim()
+            .replace(/[\s.-]+/g, "_")
+            .replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
+            .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+            .replace(/_+/g, "_")
+            .replace(/^_+|_+$/g, "")
+            .toLowerCase();
     }
 
     function restorePlayerBoneName(name) {

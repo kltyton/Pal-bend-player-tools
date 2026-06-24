@@ -4,7 +4,7 @@ Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / 
 
 ## 文件
 
-- `pal_bend_player_tools.js`：Blockbench 插件，内置 `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
+- `pal_bend_player_tools.js`：Blockbench 插件，内置普通版、“龙核玩家模型兼容版”和“龙核玩家模型版” `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
 - `player_model.geo.bbmodel`：Blockbench 玩家动画项目模板。
 - `player_model.geo.json`：对应的 Minecraft Bedrock geometry。
 - `player_model.geo.png`：玩家模型默认纹理。插件新建项目时会自动加载，并命名为 `player_model.geo.png`。
@@ -55,6 +55,16 @@ C:\Users\<用户名>\AppData\Roaming\Blockbench\plugins
 
 ```text
 PAL Bend Player Animation
+PAL Bend Player Animation - 龙核玩家模型兼容版
+PAL Bend Player Animation - 龙核玩家模型版
+```
+
+安装后在 `File > New` / `文件 > 新建` 和 `Tools` / `工具` 菜单里还会出现：
+
+```text
+PAL：新建玩家动画项目
+PAL：新建玩家动画项目（龙核玩家模型兼容版）
+PAL：新建玩家动画项目（龙核玩家模型版）
 ```
 
 安装后在 `File > Import` / `文件 > 导入` 菜单里会出现：
@@ -76,13 +86,24 @@ PAL：导出内置 player_model.geo.json
 
 使用插件内置的 `player_model.geo.json` 创建项目。这个模型包含原始玩家骨骼和 5 个 `*_bend` 辅助骨骼，可直接在 Blockbench 时间轴里预览弯曲。插件会同时加载默认纹理 `player_model.geo.png`。
 
+### 龙核玩家模型兼容版
+
+龙核玩家模型兼容版保持普通版的骨骼名不变，例如 `body`、`torso`、`torso_bend`、`right_arm_bend`、`left_item` 等；它只参考 `方便操作的分组模型.json` 的父子关系和 pivot，让上半身、手臂、小臂、腿部等更适合在 Blockbench 里做继承动画。
+
+兼容版仍使用普通 `player_model.geo` / PAL 的导入导出格式：导入时读取普通 animations/emote，导出时仍输出普通 PAL bend animations 或 emote，不会输出 `Body_Lower`、`Left_Arm` 这类龙核组名。
+
+### 龙核玩家模型版
+
+龙核玩家模型版使用 `方便操作的分组模型.json` 的组名、父子关系和 pivot，例如 `root`、`Body_Lower`、`Body`、`Left_Arm_Lower`、`Right_Hand` 等；导入导出时插件会自动在龙核组名和 PAL 骨骼名之间转换。
+
 ### 导入动画
 
 支持导入：
 
 - emote JSON；
 - PAL `bend` 字段 animations；
-- 已经带 `*_bend` helper 骨骼的 `player_model.geo` animations。
+- 已经带 `*_bend` helper 骨骼的 `player_model.geo` animations；
+- 使用 `方便操作的分组模型.json` 组名制作的龙核旧 animations，例如 `Body_Lower`、`Body`、`Right_Arm_Lower`、`Left_Leg_Lower`。
 
 导入后会统一转换为 `player_model.geo` 可编辑格式，也就是：
 

@@ -8,4 +8,5 @@
 *.txt text eol=lf
 *.json text eol=lf
 *.bbmodel text eol=lf
+*.png binary
 *.blend binary

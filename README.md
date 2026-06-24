@@ -7,6 +7,7 @@ Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / 
 - `pal_bend_player_tools.js`：Blockbench 插件，内置 `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
 - `player_model.geo.bbmodel`：Blockbench 玩家动画项目模板。
 - `player_model.geo.json`：对应的 Minecraft Bedrock geometry。
+- `player_model.geo.png`：玩家模型默认纹理。插件新建项目时会自动加载，并命名为 `player_model.geo.png`。
 - `pal_source_lib.py`：Python 转换核心库。
 - `emote_to_animations.py`：emote -> PAL bend animations；可选输出 `player_model.geo` helper-bend 格式。
 - `animations_to_emote.py`：PAL bend animations / `player_model.geo` helper-bend animations -> emote。
@@ -50,24 +51,30 @@ Windows 默认插件目录示例：
 C:\Users\<用户名>\AppData\Roaming\Blockbench\plugins
 ```
 
-安装后在 `File > New` / `文件 > 新建` 菜单里会出现：
+安装后在 `File > New` / `文件 > 新建` 打开的新建项目格式列表里会出现：
 
 ```text
-PAL：新建玩家动画项目
+PAL Bend Player Animation
 ```
 
-同时在 `Tools` 菜单里会出现：
+安装后在 `File > Import` / `文件 > 导入` 菜单里会出现：
 
 ```text
-PAL：新建玩家动画项目
 PAL：导入 animations/emote 到玩家模型
+```
+
+进入动画模式后，插件也会尝试在左侧动画窗口的原生“导入动画文件”按钮旁添加同一个 PAL 导入按钮；如果当前 Blockbench 内部工具栏接口不可用，则仍以 `File > Import` 为准。
+
+安装后在 `File > Export` / `文件 > 导出` 菜单里会出现：
+
+```text
 PAL：导出 animations/emote
 PAL：导出内置 player_model.geo.json
 ```
 
 ### 新建玩家动画项目
 
-使用插件内置的 `player_model.geo.json` 创建项目。这个模型包含原始玩家骨骼和 5 个 `*_bend` 辅助骨骼，可直接在 Blockbench 时间轴里预览弯曲。
+使用插件内置的 `player_model.geo.json` 创建项目。这个模型包含原始玩家骨骼和 5 个 `*_bend` 辅助骨骼，可直接在 Blockbench 时间轴里预览弯曲。插件会同时加载默认纹理 `player_model.geo.png`。
 
 ### 导入动画
 
@@ -84,6 +91,10 @@ right_arm.bend -> right_arm_bend.rotation.x
 left_arm.bend  -> left_arm_bend.rotation.x
 torso.bend     -> torso_bend.rotation.x
 ```
+
+导入时插件会把 PAL / Emotecraft 的默认南向动画校正到当前 `player_model.geo` 的北向预览坐标：`rotation.x/y` 和 `bend` 会在导入时校正，导出时再镜像回 PAL 使用的方向；`position` 位移值会保持原始符号。
+
+注意：本插件只转换 `*_bend.rotation.x` 与 PAL 原生 `bend`。`*_bend.rotation.y/z` 和 PAL custom pivot / `model` / `parents` 不会导入或导出。
 
 ### 导出动画
 

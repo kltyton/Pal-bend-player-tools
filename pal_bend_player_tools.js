@@ -129,8 +129,11 @@
             }
         ]
     };
+    const PLAYER_MODEL_TEXTURE_NAME = "player_model.geo.png";
+    const PLAYER_MODEL_TEXTURE_DATA_URL = "data:image/png;base64,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";
 
     let actions = [];
+    let palFormat = null;
 
     Plugin.register(PLUGIN_ID, {
         title: "PAL Bend Player Tools",
@@ -141,15 +144,8 @@
         version: "0.1.0",
         variant: "both",
         onload() {
-            const newProjectActionOptions = {
-                name: "PAL：新建玩家动画项目",
-                description: "使用内置 player_model.geo.json 创建可编辑玩家动画项目",
-                icon: "accessibility_new",
-                click: createPlayerProject
-            };
+            registerPalFormat();
             actions = [
-                new Action("pal_bend_new_player_project", newProjectActionOptions),
-                new Action("pal_bend_new_player_project_file", newProjectActionOptions),
                 new Action("pal_bend_import_animation", {
                     name: "PAL：导入 animations/emote 到玩家模型",
                     description: "导入 PAL bend animations 或 Emotecraft emote，并转换为 *_bend.rotation.x",
@@ -170,29 +166,99 @@
                     click: exportBuiltInGeo
                 })
             ];
-            MenuBar.menus.tools.addAction(actions[0]);
-            MenuBar.addAction(actions[1], "file.new");
-            actions.slice(2).forEach(action => MenuBar.menus.tools.addAction(action));
+            MenuBar.addAction(actions[0], "file.import");
+            MenuBar.addAction(actions[1], "file.export");
+            MenuBar.addAction(actions[2], "file.export");
+            attachAnimationPanelImportAction();
+            setTimeout(attachAnimationPanelImportAction, 250);
         },
         onunload() {
             actions.forEach(action => action.delete());
             actions = [];
+            if (palFormat && typeof palFormat.delete === "function") palFormat.delete();
+            palFormat = null;
         }
     });
+
+    function registerPalFormat() {
+        if (typeof ModelFormat !== "function") return;
+        if (globalThis.Formats && Formats.pal_bend_player) {
+            palFormat = Formats.pal_bend_player;
+            return;
+        }
+        palFormat = new ModelFormat("pal_bend_player", {
+            id: "pal_bend_player",
+            icon: "accessibility_new",
+            name: "PAL Bend Player Animation",
+            description: "PlayerAnimationLibrary / Emotecraft player animation project with helper bend bones.",
+            category: "minecraft",
+            box_uv: false,
+            single_texture: true,
+            bone_rig: true,
+            centered_grid: true,
+            rotate_cubes: true,
+            animation_mode: true,
+            animation_files: true,
+            select_texture_for_particles: true,
+            codec: globalThis.Codecs ? Codecs.project : undefined,
+            animation_codec: globalThis.Codecs && Codecs.bedrock && Codecs.bedrock.format ? Codecs.bedrock.format.animation_codec : undefined
+        });
+        palFormat.new = function() {
+            createPlayerProject();
+            return true;
+        };
+    }
+
+    function attachAnimationPanelImportAction() {
+        const importAction = actions[0];
+        if (!importAction || !globalThis.Toolbars || !Toolbars.animations || typeof Toolbars.animations.add !== "function") return false;
+        const toolbar = Toolbars.animations;
+        if (Array.isArray(toolbar.children) && toolbar.children.some(item => item === importAction || item === importAction.id || item && item.id === importAction.id)) return true;
+        let index = 3;
+        if (Array.isArray(toolbar.children)) {
+            const nativeIndex = toolbar.children.findIndex(item => item === "load_animation_file" || item && item.id === "load_animation_file");
+            if (nativeIndex >= 0) index = nativeIndex + 1;
+        }
+        toolbar.add(importAction, index);
+        return true;
+    }
 
     function createPlayerProject() {
         const content = prettyJson(PLAYER_MODEL_GEO);
         try {
-            if (typeof loadModelFile === "function") {
+            if (canUseBedrockGeometryParser()) {
+                setupProject(Formats.bedrock);
+                Codecs.bedrock.parseGeometry({object: clone(PLAYER_MODEL_GEO["minecraft:geometry"][0])}, {
+                    switch_to_existing_tab: false
+                });
+                if (isProjectObject()) {
+                    Project.name = "player_model.geo";
+                    Project.export_path = "";
+                    Project.export_codec = "bedrock";
+                }
+            } else if (globalThis.Codecs && Codecs.bedrock && typeof Codecs.bedrock.load === "function") {
+                Codecs.bedrock.load(clone(PLAYER_MODEL_GEO), {
+                    content,
+                    name: "player_model.geo.json",
+                    path: getVirtualPlayerModelPath(),
+                    no_file: true
+                }, {
+                    switch_to_existing_tab: false
+                });
+            } else if (typeof loadModelFile === "function") {
                 loadModelFile({
                     content,
-                    path: "player_model.geo.json"
+                    name: "player_model.geo.json",
+                    path: getVirtualPlayerModelPath(),
+                    no_file: true
                 });
             } else if (globalThis.Codecs && Codecs.bedrock && typeof Codecs.bedrock.parse === "function") {
-                Codecs.bedrock.parse(JSON.parse(content), "player_model.geo.json");
+                ensureBedrockProject();
+                Codecs.bedrock.parse(JSON.parse(content), "player_model.geo.json", {});
             } else {
                 createPlayerProjectFallback();
             }
+            queuePlayerTextureLoad();
             Blockbench.showQuickMessage("已创建 player_model.geo 玩家动画项目", 1800);
         } catch (error) {
             console.error(error);
@@ -203,11 +269,125 @@
         }
     }
 
-    function createPlayerProjectFallback() {
-        if (Formats && Formats.bedrock && typeof Formats.bedrock.select === "function") {
-            Formats.bedrock.select();
+    function canUseBedrockGeometryParser() {
+        return typeof setupProject === "function"
+            && globalThis.Formats
+            && Formats.bedrock
+            && globalThis.Codecs
+            && Codecs.bedrock
+            && typeof Codecs.bedrock.parseGeometry === "function";
+    }
+
+    function ensureBedrockProject() {
+        if (isProjectObject()) return true;
+        if (typeof setupProject === "function" && globalThis.Formats && Formats.bedrock) {
+            setupProject(Formats.bedrock);
+            return isProjectObject();
         }
-        if (Project) {
+        if (typeof newProject === "function" && globalThis.Formats && Formats.bedrock) {
+            newProject(Formats.bedrock);
+            return isProjectObject();
+        }
+        return false;
+    }
+
+    function isProjectObject() {
+        return globalThis.Project && typeof Project === "object";
+    }
+
+    function getVirtualPlayerModelPath() {
+        const separator = typeof osfs === "string" ? osfs : "/";
+        return `${Date.now()}${separator}player_model.geo.json`;
+    }
+
+    function queuePlayerTextureLoad() {
+        addPlayerTexture();
+        setTimeout(addPlayerTexture, 80);
+        setTimeout(addPlayerTexture, 300);
+    }
+
+    function addPlayerTexture() {
+        if (typeof Texture !== "function") return;
+        try {
+            let texture = Texture.all && Texture.all.find(item => item.name === PLAYER_MODEL_TEXTURE_NAME);
+            if (!texture) {
+                texture = new Texture({
+                    name: PLAYER_MODEL_TEXTURE_NAME,
+                    keep_size: true,
+                    uv_width: 64,
+                    uv_height: 64
+                });
+            }
+            if (typeof texture.add === "function" && (!Texture.all || !Texture.all.includes(texture))) {
+                texture.add(true, true);
+            }
+            texture.load_callback = function(loadedTexture) {
+                const activeTexture = loadedTexture || texture;
+                setPlayerTextureMetadata(activeTexture);
+                assignTextureToCubes(activeTexture);
+            };
+            const texturePath = getPlayerTexturePath();
+            if (texturePath && typeof texture.fromPath === "function") {
+                texture = texture.fromPath(texturePath) || texture;
+            } else if (typeof texture.fromDataURL === "function") {
+                texture = texture.fromDataURL(PLAYER_MODEL_TEXTURE_DATA_URL) || texture;
+            }
+            setPlayerTextureMetadata(texture);
+            assignTextureToCubes(texture);
+        } catch (error) {
+            console.warn("[PAL Bend Player Tools] Failed to add player texture:", error);
+        }
+    }
+
+    function getPlayerTexturePath() {
+        if (!globalThis.Plugins || !Plugins.path) return "";
+        const separator = typeof osfs === "string" ? osfs : "/";
+        const base = String(Plugins.path).replace(/[\\/]+$/, "");
+        const path = base + separator + PLAYER_MODEL_TEXTURE_NAME;
+        if (globalThis.fs && typeof fs.existsSync === "function" && !fs.existsSync(path)) return "";
+        return path;
+    }
+
+    function setPlayerTextureMetadata(texture) {
+        if (!texture) return;
+        texture.name = PLAYER_MODEL_TEXTURE_NAME;
+        texture.uv_width = 64;
+        texture.uv_height = 64;
+        texture.saved = true;
+        texture.use_as_default = true;
+        if (typeof texture.setAsDefaultTexture === "function") texture.setAsDefaultTexture();
+        if (typeof texture.enableParticle === "function") texture.enableParticle();
+    }
+
+    function assignTextureToCubes(texture) {
+        if (!texture || !globalThis.Cube || !Cube.all) return;
+        const textureId = texture.uuid;
+        if (!textureId) return;
+        Cube.all.forEach(cube => {
+            if (typeof cube.applyTexture === "function") {
+                cube.applyTexture(texture, true);
+                return;
+            }
+            if (!cube.faces) return;
+            Object.values(cube.faces).forEach(face => {
+                if (face) face.texture = textureId;
+            });
+        });
+        if (isProjectObject()) {
+            Project.texture_width = 64;
+            Project.texture_height = 64;
+        }
+        if (globalThis.Canvas && typeof Canvas.updateAllFaces === "function") Canvas.updateAllFaces();
+        if (globalThis.Canvas && typeof Canvas.updateAll === "function") Canvas.updateAll();
+    }
+
+    function createPlayerProjectFallback() {
+        if (isProjectObject() && Formats && Formats.bedrock && typeof Formats.bedrock.select === "function") {
+            Formats.bedrock.select();
+        } else {
+            ensureBedrockProject();
+        }
+        if (isProjectObject()) {
             Project.name = "player_model.geo";
             Project.geometry_name = "geometry.unknown";
             Project.texture_width = 64;
@@ -274,10 +454,10 @@
                     showError("文件不是 emote JSON，也不是带 animations 字段的动画 JSON。");
                     return;
                 }
-                const modelAnimations = convertToBendableModelFormat(animationsJson, {
+                const modelAnimations = mirrorFacingForBlockbench(convertToBendableModelFormat(animationsJson, {
                     keepPalBend: false,
                     helperSign: 1
-                });
+                }));
                 const result = loadAnimationsIntoProject(modelAnimations);
                 Blockbench.showQuickMessage(`已导入 ${result.created} 个动画${result.missing ? `，${result.missing} 个骨骼未匹配` : ""}`, 2600);
             } catch (error) {
@@ -350,7 +530,7 @@
             return;
         }
 
-        const modelAnimations = compileAnimationsFromProject(animations);
+        const modelAnimations = mirrorFacingForPal(compileAnimationsFromProject(animations));
         const palBendAnimations = modelAnimationsToPalBend(modelAnimations, {
             helperSign: 1,
             keepHelpers: false
@@ -525,6 +705,78 @@
         return track;
     }
 
+    function mirrorFacingForBlockbench(data) {
+        return mirrorNorthSouthAnimationData(data);
+    }
+
+    function mirrorFacingForPal(data) {
+        return mirrorNorthSouthAnimationData(data);
+    }
+
+    function mirrorNorthSouthAnimationData(data) {
+        const out = clone(data);
+        Object.values(out.animations || {}).forEach(animObj => {
+            if (!animObj || typeof animObj !== "object") return;
+            Object.values(animObj.bones || {}).forEach(bone => {
+                if (!bone || typeof bone !== "object") return;
+                if (bone.rotation !== undefined) bone.rotation = mirrorTrackPayload(bone.rotation, "rotation");
+                if (bone.bend !== undefined) bone.bend = mirrorTrackPayload(bone.bend, "bend");
+            });
+        });
+        return out;
+    }
+
+    function mirrorTrackPayload(track, channel) {
+        if (track === undefined || track === null) return track;
+        if (Array.isArray(track) || isNum(track) || typeof track === "string" || looksLikeSingleKeyframe(track)) {
+            return mirrorKeyPayload(track, channel);
+        }
+        if (typeof track === "object") {
+            const out = {};
+            Object.keys(track).forEach(time => {
+                out[time] = mirrorKeyPayload(track[time], channel);
+            });
+            return out;
+        }
+        return track;
+    }
+
+    function mirrorKeyPayload(payload, channel) {
+        if (Array.isArray(payload)) return mirrorVector(payload, channel);
+        if (isNum(payload) || typeof payload === "string") {
+            if (channel === "bend") return invertAnimationValue(payload);
+            if (channel === "rotation") return mirrorVector([payload, payload, payload], channel);
+            if (channel === "position") return mirrorVector([payload, payload, payload], channel);
+            return payload;
+        }
+        if (!payload || typeof payload !== "object") return payload;
+        const out = clone(payload);
+        if (out.value !== undefined) {
+            out.value = channel === "bend" ? invertAnimationValue(out.value) : mirrorVector([out.value, 0, 0], channel)[0];
+        }
+        if (out.vector !== undefined) out.vector = mirrorVector(valueToVector(out.vector, channel), channel);
+        if (out.pre !== undefined) out.pre = mirrorKeyPayload(out.pre, channel);
+        if (out.post !== undefined) out.post = mirrorKeyPayload(out.post, channel);
+        return out;
+    }
+
+    function mirrorVector(vector, channel) {
+        const out = Array.isArray(vector) ? vector.slice(0, 3) : [vector, vector, vector];
+        while (out.length < 3) out.push(channel === "scale" ? 1 : 0);
+        if (channel === "rotation") {
+            out[0] = invertAnimationValue(out[0]);
+            out[1] = invertAnimationValue(out[1]);
+        } else if (channel === "bend") {
+            out[0] = invertAnimationValue(out[0]);
+        }
+        return cleanNumber(out);
+    }
+
+    function invertAnimationValue(value) {
+        if (isSkip(value)) return value;
+        return applySign(value, -1);
+    }
+
     function getAnimatorForGroup(group, animation, fallbackName) {
         if (typeof animation.getBoneAnimator === "function") {
             try {
@@ -615,7 +867,7 @@
             if (frame.pre !== undefined) out.pre = applySign(vectorX(frame.pre, 0), helperSign);
             if (frame.post !== undefined) out.post = applySign(vectorX(frame.post, 0), helperSign);
             else if (frame.vector !== undefined || frame.value !== undefined) out.post = applySign(vectorX(frame, 0), helperSign);
-            ["lerp_mode", "easing", "easingArgs", "easingX", "easingY", "easingZ", "easingArgsX", "easingArgsY", "easingArgsZ"].forEach(key => {
+            ["lerp_mode", "easing", "easingArgs", "easingX", "easingArgsX"].forEach(key => {
                 if (frame[key] !== undefined) out[key] = clone(frame[key]);
             });
             if (!Object.keys(out).length) out.post = applySign(vectorX(frame, 0), helperSign);
@@ -1057,6 +1309,7 @@
         const isItem = bone === "right_item" || bone === "left_item";
         const isCape = bone === "cape";
         const isBody = bone === "body";
+        if (transform === "position" && isBody) return false;
         if (transform === "position" || transform === "rotation") {
             if (axisIndex === 0) return isItem || isCape || isBody;
             if (axisIndex === 1) return isItem || transformType === null || (isBody && transformType === "rotation");
@@ -1190,8 +1443,8 @@
 
     function findGroupByName(name) {
         if (!globalThis.Group || !Group.all) return null;
-        const lower = String(name).toLowerCase();
-        return Group.all.find(group => String(group.name).toLowerCase() === lower) || null;
+        const target = getCorrectPlayerBoneName(name);
+        return Group.all.find(group => getCorrectPlayerBoneName(group.name) === target) || null;
     }
 
     function findGroupNameByUuid(uuid) {

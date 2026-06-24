@@ -199,12 +199,15 @@
 
     Plugin.register(PLUGIN_ID, {
         title: "PAL Bend Player Tools",
-        author: "fufufuns",
-        icon: "accessibility_new",
-        description: "Edit PAL / Emotecraft player animations with player_model.geo helper bend bones.",
-        tags: ["Animation", "Minecraft: Bedrock Edition"],
+        author: "kltyton",
+        icon: "icon.png",
+        description: "Create, import, and export PlayerAnimationLibrary and Emotecraft player bend animations.",
+        tags: ["Minecraft: Java Edition", "Animation", "Tools"],
         version: "0.3.0",
         variant: "both",
+        min_version: "4.8.0",
+        repository: "https://github.com/kltyton/Pal-bend-player-tools",
+        bug_tracker: "https://github.com/kltyton/Pal-bend-player-tools/issues",
         onload() {
             registerPalFormat();
             actions = [

@@ -4,7 +4,7 @@ Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / 
 
 ## 文件
 
-- `pal_bend_player_tools.js`：Blockbench 插件，内置普通版、“龙核玩家模型兼容版”和“龙核玩家模型版” `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
+- `pal_bend_player_tools.js`：Blockbench 插件，内置普通版和“龙核玩家模型版” `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
 - `player_model.geo.bbmodel`：Blockbench 玩家动画项目模板。
 - `player_model.geo.json`：对应的 Minecraft Bedrock geometry。
 - `player_model.geo.png`：玩家模型默认纹理。插件新建项目时会自动加载，并命名为 `player_model.geo.png`。
@@ -55,22 +55,20 @@ C:\Users\<用户名>\AppData\Roaming\Blockbench\plugins
 
 ```text
 PAL Bend Player Animation
-PAL Bend Player Animation - 龙核玩家模型兼容版
 PAL Bend Player Animation - 龙核玩家模型版
 ```
 
 安装后在 `File > New` / `文件 > 新建` 和 `Tools` / `工具` 菜单里还会出现：
 
 ```text
-PAL：新建玩家动画项目
-PAL：新建玩家动画项目（龙核玩家模型兼容版）
-PAL：新建玩家动画项目（龙核玩家模型版）
+PAL Bend Player Animation
+PAL Bend Player Animation - 龙核玩家模型版
 ```
 
 安装后在 `File > Import` / `文件 > 导入` 菜单里会出现：
 
 ```text
-PAL：导入 animations/emote 到玩家模型
+PAL: Import Player Animation
 ```
 
 进入动画模式后，插件也会尝试在左侧动画窗口的原生“导入动画文件”按钮旁添加同一个 PAL 导入按钮；如果当前 Blockbench 内部工具栏接口不可用，则仍以 `File > Import` 为准。
@@ -78,19 +76,13 @@ PAL：导入 animations/emote 到玩家模型
 安装后在 `File > Export` / `文件 > 导出` 菜单里会出现：
 
 ```text
-PAL：导出 animations/emote
-PAL：导出内置 player_model.geo.json
+PAL: Export Player Animation
+PAL: Export Bundled player_model.geo.json
 ```
 
 ### 新建玩家动画项目
 
 使用插件内置的 `player_model.geo.json` 创建项目。这个模型包含原始玩家骨骼和 5 个 `*_bend` 辅助骨骼，可直接在 Blockbench 时间轴里预览弯曲。插件会同时加载默认纹理 `player_model.geo.png`。
-
-### 龙核玩家模型兼容版
-
-龙核玩家模型兼容版保持普通版的骨骼名不变，例如 `body`、`torso`、`torso_bend`、`right_arm_bend`、`left_item` 等；它只参考 `方便操作的分组模型.json` 的父子关系和 pivot，让上半身、手臂、小臂、腿部等更适合在 Blockbench 里做继承动画。
-
-兼容版仍使用普通 `player_model.geo` / PAL 的导入导出格式：导入时读取普通 animations/emote，导出时仍输出普通 PAL bend animations 或 emote，不会输出 `Body_Lower`、`Left_Arm` 这类龙核组名。
 
 ### 龙核玩家模型版
 
@@ -129,7 +121,7 @@ left_arm_bend.rotation.x/y/z  -> left_arm.bend x/y/z
 torso_bend.rotation.x/y/z     -> torso.bend x/y/z
 ```
 
-导出前插件会按当前 Blockbench 项目的父子关系和 pivot，把 `body`、`torso`、`*_bend` 等父级继承烘焙进 PAL 的平铺骨骼轨道里；因此龙核玩家模型兼容版 / 龙核玩家模型版仍会导出为传统平铺 PAL 骨骼名。
+导出前插件会按当前 Blockbench 项目的父子关系和 pivot，把 `body`、`torso`、`*_bend` 等父级继承烘焙进 PAL 的平铺骨骼轨道里；因此龙核玩家模型版仍会导出为传统平铺 PAL 骨骼名。
 
 然后按选择导出：
 

@@ -12,6 +12,13 @@ Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / 
 - `emote_to_animations.py`：emote -> PAL bend animations；可选输出 `player_model.geo` helper-bend 格式。
 - `animations_to_emote.py`：PAL bend animations / `player_model.geo` helper-bend animations -> emote。
 - `traditional_bend_to_pal_bend.py`：`*_bend.rotation.x` helper-bend animations -> PAL `bend` 字段 animations。
+- `blender/`：同步 KosmX/emotes 2026 年 8 月的 Blender 工程和导出脚本，来源、版本要求与许可见 [blender/UPSTREAM.md](blender/UPSTREAM.md)。需要 Blender 5.2+，上游面向 PAL 1.2.5+mc.26.2 及更新版本。
+
+### 0.4.1：新版 Blender 动画导入
+
+导入时按每个动画自身的 `model` / `parents` 读取层级，保留 `loopTick`、PAL 作者和图标等元数据。支持逐轴缓动和 `pal.disabled` 的独立轴时间轴；镜像时同步调整 Bezier 控制点的值偏移，保留时间单位。需要转换层级时，以每秒 60 次采样保存曲线形状，再输出线性关键帧；未转换的轨道保留原缓动参数。
+
+旧 Blender 工程和 Python 转换脚本保留原有行为。标准 Blockbench 玩家模型没有自定义骨骼或披风几何时，相关轨道会保留，但不会自动生成几何。
 
 ## 模型约定
 

@@ -10,7 +10,9 @@ function loadTools(filename) {
     const source = fs.readFileSync(filename, 'utf8').replace(/\}\)\(\);\s*$/, `
         globalThis.tools = {getHierarchyMetadataRig, compileAnimationsFromProject,
             jsonElementToBlockbenchKey, blockbenchKeyframesToTrack, mirrorKeyPayload,
-            sampleTrackVector, getBakeTimes, findBakeEasing};
+            sampleTrackVector, getBakeTimes, findBakeEasing, mirrorPoseVector,
+            detectRigFromEntries, exportBoneTracksForInterop, importPalTracksForInterop,
+            PLAYER_MODEL_TEXTURE_DATA_URL};
     })();`);
     vm.runInContext(source, context, {filename});
     return context.tools;
@@ -81,4 +83,38 @@ test('Blender pal.disabled keys leave each axis on its own timeline', () => {
         1: {vector: [20, 'pal.disabled', 30], easingX: 'linear', easingZ: 'linear'}
     };
     assert.deepEqual(plain(tools.sampleTrackVector(track, 'rotation', 0.5, [0, 0, 0])), [10, 10, 15]);
+});
+
+test('Pose mirroring flips Y/Z rotations and X positions across the sagittal plane', () => {
+    assert.deepEqual(plain(tools.mirrorPoseVector([45, 20, -15], 'rotation')), [45, -20, 15]);
+    assert.deepEqual(plain(tools.mirrorPoseVector([6, 12, -3], 'position')), [-6, 12, -3]);
+    assert.deepEqual(plain(tools.mirrorPoseVector([1.2, 0.9, 1.1], 'scale')), [1.2, 0.9, 1.1]);
+});
+
+test('Interop export/import round-trips 3-axis MoreRotation bends in strict AnimCue vector form', () => {
+    const exported = tools.exportBoneTracksForInterop('wave', {
+        right_arm: {rotation: {0: [0, 0, 0], 0.5: [60, 0, -10]}},
+        right_arm_bend: {rotation: {0: [0, 0, 0], 0.5: [42, 18, -12]}}
+    }, {preset: 'player', length: 1, animcueStrict: true});
+    assert.equal(exported.needsMoreRotation, true);
+    assert.equal(exported.bones.right_arm_bend, undefined);
+    assert.deepEqual(plain(exported.bones.right_arm.rotation['0.5']), [-60, 0, -10]);
+    assert.deepEqual(plain(exported.bones.right_arm.bend['0.5']), [-42, -18, -12]);
+
+    const restored = tools.importPalTracksForInterop({
+        format_version: '1.8.0',
+        animations: {wave: {animation_length: 1, bones: exported.bones}}
+    }, {targetPreset: 'player'});
+    const bend05 = restored.animations.wave.bones.right_arm_bend.rotation['0.5'];
+    const bendVec = Array.isArray(bend05) ? bend05 : (bend05.post || bend05.vector);
+    assert.deepEqual(plain(bendVec), [42, 18, -12]);
+});
+
+test('Bundled player_model.geo.png data URL is a valid non-truncated PNG', () => {
+    const prefix = 'data:image/png;base64,';
+    assert.ok(tools.PLAYER_MODEL_TEXTURE_DATA_URL.startsWith(prefix));
+    const buf = Buffer.from(tools.PLAYER_MODEL_TEXTURE_DATA_URL.slice(prefix.length), 'base64');
+    assert.ok(buf.length > 2000);
+    assert.equal(buf.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+    assert.equal(buf.subarray(buf.length - 8, buf.length - 4).toString('ascii'), 'IEND');
 });

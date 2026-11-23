@@ -14,6 +14,13 @@ Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / 
 - `traditional_bend_to_pal_bend.py`：`*_bend.rotation.x` helper-bend animations -> PAL `bend` 字段 animations。
 - `blender/`：同步 KosmX/emotes 2026 年 8 月的 Blender 工程和导出脚本，来源、版本要求与许可见 [blender/UPSTREAM.md](blender/UPSTREAM.md)。需要 Blender 5.2+，上游面向 PAL 1.2.5+mc.26.2 及更新版本。
 
+### 0.4.2：玩家侧边栏、姿势镜像与 AnimCue 联动
+
+- 新增原生风格 **PAL 玩家 / PAL Player** 侧边栏面板：点击人偶部位即可直接选中对应骨骼或 `*_bend` 弯曲关节，带关键帧角标提示，并实时显示当前动画处于 `PAL 原版` 还是 `MoreRotation (三轴)` 模式。
+- 新增 **加载皮肤 (.png)**、**左右镜像姿势 (L ↔ R)**、**归零单骨** 与 **归零全身** 工具（支持撤销），也可直接作用于 AnimCue 场景中选中的 PAL 角色。
+- 暴露版本化跨插件接口 `PalBendPlayerToolsAPI`，持久化 `pal_bend_player_tools_rig` 项目属性，并在导入时避让包含 `kltyton:interactions` 的合拍文件，以便与 AnimCue Studio 协同工作。
+- 修复内嵌默认皮肤 `PLAYER_MODEL_TEXTURE_DATA_URL` 数据截断导致无外部贴图时回退透明的问题。
+
 ### 0.4.1：新版 Blender 动画导入
 
 导入时按每个动画自身的 `model` / `parents` 读取层级，保留 `loopTick`、PAL 作者和图标等元数据。支持逐轴缓动和 `pal.disabled` 的独立轴时间轴；镜像时同步调整 Bezier 控制点的值偏移，保留时间单位。需要转换层级时，以每秒 60 次采样保存曲线形状，再输出线性关键帧；未转换的轨道保留原缓动参数。

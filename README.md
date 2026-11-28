@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>English</strong> · <a href="README_zh.md">简体中文</a> · <a href="https://github.com/kltyton/Pal-bend-player-tools/wiki">Wiki</a> · <a href="https://github.com/kltyton/AnimCue-Studio">AnimCue Studio</a>
+  <strong>English</strong> · <a href="README_zh.md">简体中文</a> · <a href="https://github.com/kltyton/Pal-bend-player-tools/wiki">Wiki</a> · <a href="https://github.com/kltyton/AnimCue-Studio">AnimCue Studio</a> · <a href="https://github.com/kltyton/ParticleCue-Studio">ParticleCue Studio</a>
 </p>
 
 ---

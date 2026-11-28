@@ -1,185 +1,123 @@
-# PAL Bend Player Tools
+<p align="center">
+  <img src="icon.png" alt="PAL Bend Player Tools" width="84" />
+</p>
 
-Blockbench 插件 + Python 转换脚本，用于编辑 PlayerAnimationLibrary / Emotecraft 玩家动画，并支持 `*_bend` 辅助骨骼弯曲。
+<h1 align="center">PAL Bend Player Tools</h1>
 
-## 文件
+<p align="center">
+  <strong>Minecraft PlayerAnimationLib (PAL) bend-rig authoring, import/export, and Blender/Python interop for Blockbench</strong>
+</p>
 
-- `pal_bend_player_tools.js`：Blockbench 插件，内置普通版和“龙核玩家模型版” `player_model.geo.json`，可直接创建玩家动画项目、导入动画、导出动画。
-- `player_model.geo.bbmodel`：Blockbench 玩家动画项目模板。
-- `player_model.geo.json`：对应的 Minecraft Bedrock geometry。
-- `player_model.geo.png`：玩家模型默认纹理。插件新建项目时会自动加载，并命名为 `player_model.geo.png`。
-- `pal_source_lib.py`：Python 转换核心库。
-- `emote_to_animations.py`：emote -> PAL bend animations；可选输出 `player_model.geo` helper-bend 格式。
-- `animations_to_emote.py`：PAL bend animations / `player_model.geo` helper-bend animations -> emote。
-- `traditional_bend_to_pal_bend.py`：`*_bend.rotation.x` helper-bend animations -> PAL `bend` 字段 animations。
-- `blender/`：同步 KosmX/emotes 2026 年 8 月的 Blender 工程和导出脚本，来源、版本要求与许可见 [blender/UPSTREAM.md](blender/UPSTREAM.md)。需要 Blender 5.2+，上游面向 PAL 1.2.5+mc.26.2 及更新版本。
+<p align="center">
+  <strong>English</strong> · <a href="README_zh.md">简体中文</a> · <a href="https://github.com/kltyton/Pal-bend-player-tools/wiki">Wiki</a> · <a href="https://github.com/kltyton/AnimCue-Studio">AnimCue Studio</a>
+</p>
 
-### 0.4.2：玩家侧边栏、姿势镜像与 AnimCue 联动
+---
 
-- 新增原生风格 **PAL 玩家 / PAL Player** 侧边栏面板：点击人偶部位即可直接选中对应骨骼或 `*_bend` 弯曲关节，带关键帧角标提示，并实时显示当前动画处于 `PAL 原版` 还是 `MoreRotation (三轴)` 模式。
-- 新增 **加载皮肤 (.png)**、**左右镜像姿势 (L ↔ R)**、**归零单骨** 与 **归零全身** 工具（支持撤销），也可直接作用于 AnimCue 场景中选中的 PAL 角色。
-- 暴露版本化跨插件接口 `PalBendPlayerToolsAPI`，持久化 `pal_bend_player_tools_rig` 项目属性，并在导入时避让包含 `kltyton:interactions` 的合拍文件，以便与 AnimCue Studio 协同工作。
-- 修复内嵌默认皮肤 `PLAYER_MODEL_TEXTURE_DATA_URL` 数据截断导致无外部贴图时回退透明的问题。
+**PAL Bend Player Tools** is a Blockbench plugin and companion toolset for creating, editing, importing, and exporting Minecraft [PlayerAnimationLib (PAL)](https://github.com/ZigytheBird/PlayerAnimationLib) player animations — supporting both **PAL standard single-axis bends** and **MoreRotation 3-axis bends**, **DragonCore player rigs**, **KosmX Blender 5.2+ JSON round-trips**, and live multi-actor integration with **[AnimCue Studio](https://github.com/kltyton/AnimCue-Studio)**.
 
-### 0.4.1：新版 Blender 动画导入
+![PAL Standard Player Rig and Interactive Body Panel](docs/images/pal-player-panel.png)
 
-导入时按每个动画自身的 `model` / `parents` 读取层级，保留 `loopTick`、PAL 作者和图标等元数据。支持逐轴缓动和 `pal.disabled` 的独立轴时间轴；镜像时同步调整 Bezier 控制点的值偏移，保留时间单位。需要转换层级时，以每秒 60 次采样保存曲线形状，再输出线性关键帧；未转换的轨道保留原缓动参数。
+## Key Features
 
-旧 Blender 工程和 Python 转换脚本保留原有行为。标准 Blockbench 玩家模型没有自定义骨骼或披风几何时，相关轨道会保留，但不会自动生成几何。
+- **One-Click Player Rigs (Standard PAL & DragonCore)** — Create ready-to-animate Bedrock player projects using the bundled `player_model.geo` bend rig or the DragonCore (`root > Body_Lower > Body > *_Lower`) hierarchy, complete with skin loading and helper bend bones.
+- **Interactive PAL Player Sidebar Panel** — Click any limb or bend joint on the visual body diagram to select bones immediately, mirror poses `L ↔ R`, reset a single bone or full pose, and check active rig / bend-mode badges at a glance.
+- **PAL Vanilla & MoreRotation (3-Axis) Support** — Author and round-trip standard PAL `bend` / `bendDirection` tracks as well as full 3-axis `MoreRotation` bend vectors without losing metadata, loop return ticks, or per-axis Bezier handles.
+- **Blender 5.2+ & Emote JSON Round-Trip** — Import and export PAL animation JSON, Emotecraft `.emote.json`, and KosmX Blender 5.2+ exporter JSON (including animation-local `model`/`parents`, `loopTick`, and custom bones).
+- **Seamless AnimCue Studio Co-Install** — Exposes a clean runtime interop bridge (`PAL 0.4.2`) so [AnimCue Studio](https://github.com/kltyton/AnimCue-Studio) can spawn PAL standard or DragonCore players as multi-actor scene participants and export per-actor PAL emote files.
 
-## 模型约定
+### DragonCore Player Rig & MoreRotation (3-Axis)
 
-`player_model.geo` 使用这些辅助骨骼：
+![DragonCore Player Rig in Blockbench](docs/images/dragoncore-rig.png)
 
-```text
-torso_bend
-right_arm_bend
-left_arm_bend
-right_leg_bend
-left_leg_bend
-```
+### Co-Installed with AnimCue Studio (Multi-Actor Scenes)
 
-模型保持原始项目层级：
+![PAL Bend Player Tools co-installed with AnimCue Studio](docs/images/animcue-coop.png)
 
-```text
-right_item -> right_arm_bend
-left_item  -> left_arm_bend
-```
+## Installation
 
-本项目默认使用同号 bend 约定：
+### Option 1: Blockbench Plugin Store (Recommended)
 
-```text
-player_model.geo helper rotation.x/y/z = PAL bend degrees x/y/z
-PAL bend degrees x/y/z = player_model.geo helper rotation.x/y/z
-```
+1. Open **Blockbench** (desktop or web).
+2. Go to **File → Plugins → Available** and search for **PAL Bend Player Tools**.
+3. Click **Install**.
 
-Python 脚本里对应参数是 `--helper-sign 1`，这是默认值。只有你明确需要反向时才使用 `--helper-sign -1`。
+### Option 2: Manual Install from This Repository
 
-## Blockbench 插件用法
+1. Download [`pal_bend_player_tools.js`](pal_bend_player_tools.js).
+2. In Blockbench, open **File → Plugins → Load Plugin from File** and select `pal_bend_player_tools.js`.
 
-把 `pal_bend_player_tools.js` 放到 Blockbench 插件目录，或在 Blockbench 的插件管理器中从文件加载。
+## Quick Start
 
-Windows 默认插件目录示例：
+1. In the **PAL Player** sidebar panel (or **File / Tools** menu), click **New** to create either a **Standard PAL** or **DragonCore** player project.
+2. Switch to **Animate** mode, load a custom player skin if desired, and click limbs or elbow/knee dots in the panel body map to pose the rig.
+3. Use **Mirror L↔R**, **Reset Bone**, and **Reset Pose** while blocking keyframes.
+4. Click **Export** to save PAL animation JSON or Emote JSON directly, or use **Import** to bring existing PAL / Emotecraft / Blender 5.2+ animations onto the rig.
+
+## Repository Structure
 
 ```text
-C:\Users\<用户名>\AppData\Roaming\Blockbench\plugins
+Pal-bend-player-tools/
+├── pal_bend_player_tools.js        # Blockbench plugin entry (ready to load)
+├── icon.png                        # Plugin store icon
+├── models/                         # Bundled reference player rigs & UV skin texture
+│   ├── player_model.geo.bbmodel
+│   ├── player_model.geo.json
+│   ├── player_model.geo.png
+│   └── player_model_dragoncore.geo.json
+├── scripts/                        # Standalone Python CLI converters (PAL ↔ Bedrock / Emote)
+│   ├── pal_source_lib.py
+│   ├── animations_to_emote.py
+│   ├── emote_to_animations.py
+│   └── traditional_bend_to_pal_bend.py
+├── blender/                        # Unmodified KosmX/emotes Blender 5.2+ upstream snapshot (GPL-3.0)
+│   ├── UPSTREAM.md
+│   ├── emote_creator.blend
+│   ├── export.py
+│   ├── export_functions/
+│   └── legacy/                     # Legacy Blender rig & exporter for older workflows
+│       ├── emote_creator_bend_item_scale.blend
+│       └── emote_blender_exporter_legacy.py
+├── tests/                          # Automated Node.js contract tests
+│   └── blender_contract.test.cjs
+└── docs/
+    └── images/                     # Blockbench showcase screenshots
 ```
 
-安装后在 `File > New` / `文件 > 新建` 打开的新建项目格式列表里会出现：
+## Python CLI Converters
 
-```text
-PAL Bend Player Animation
-PAL Bend Player Animation - 龙核玩家模型版
-```
-
-安装后在 `File > New` / `文件 > 新建` 和 `Tools` / `工具` 菜单里还会出现：
-
-```text
-PAL Bend Player Animation
-PAL Bend Player Animation - 龙核玩家模型版
-```
-
-安装后在 `File > Import` / `文件 > 导入` 菜单里会出现：
-
-```text
-PAL: Import Player Animation
-```
-
-进入动画模式后，插件也会尝试在左侧动画窗口的原生“导入动画文件”按钮旁添加同一个 PAL 导入按钮；如果当前 Blockbench 内部工具栏接口不可用，则仍以 `File > Import` 为准。
-
-安装后在 `File > Export` / `文件 > 导出` 菜单里会出现：
-
-```text
-PAL: Export Player Animation
-PAL: Export Bundled player_model.geo.json
-```
-
-### 新建玩家动画项目
-
-使用插件内置的 `player_model.geo.json` 创建项目。这个模型包含原始玩家骨骼和 5 个 `*_bend` 辅助骨骼，可直接在 Blockbench 时间轴里预览弯曲。插件会同时加载默认纹理 `player_model.geo.png`。
-
-### 龙核玩家模型版
-
-龙核玩家模型版使用 `方便操作的分组模型.json` 的组名、父子关系和 pivot，例如 `root`、`Body_Lower`、`Body`、`Left_Arm_Lower`、`Right_Hand` 等；导入导出时插件会自动在龙核组名和 PAL 骨骼名之间转换。
-
-### 导入动画
-
-支持导入：
-
-- emote JSON；
-- PAL `bend` 字段 animations；
-- 已经带 `*_bend` helper 骨骼的 `player_model.geo` animations；
-- 使用 `方便操作的分组模型.json` 组名制作的龙核旧 animations，例如 `Body_Lower`、`Body`、`Right_Arm_Lower`、`Left_Leg_Lower`。
-
-导入后会统一转换为 `player_model.geo` 可编辑格式，也就是：
-
-```text
-right_arm.bend x/y/z -> right_arm_bend.rotation.x/y/z
-left_arm.bend x/y/z  -> left_arm_bend.rotation.x/y/z
-torso.bend x/y/z     -> torso_bend.rotation.x/y/z
-```
-
-导入时插件会把 PAL / Emotecraft 的默认南向动画校正到当前 `player_model.geo` 的北向预览坐标：`rotation.x/y` 和 `bend` 会在导入时校正，导出时再镜像回 PAL 使用的方向；`position` 位移值会保持原始符号。
-
-导入龙核旧 animations 到普通 PAL 项目时，插件会先按龙核友好 rig 烘焙成平铺 PAL，再反向解烘焙回当前项目的本地父子轨道。导入平铺 PAL / emote 到带父子关系的玩家项目时，也会反向解烘焙回当前项目；已带 `*_bend` helper 的本地模型动画不会做这一步。
-
-注意：本插件会导入/导出 `*_bend.rotation.x/y/z` 与 PAL 原生 `bend`。只有 X 轴变化时仍导出原版 scalar / `post` X 格式；存在 Y/Z 旋转时导出 `[x, y, z]` 向量 bend，供 PlayerAnimationLibraryMoreRotation 使用。Emotecraft emote 仍只有单个 `bend` 字段，因此导出 emote 时只写 X 轴 bend。
-
-### 导出动画
-
-导出时会先把当前 `player_model.geo` helper 动画转换为 PAL bend animations：
-
-```text
-right_arm_bend.rotation.x/y/z -> right_arm.bend x/y/z
-left_arm_bend.rotation.x/y/z  -> left_arm.bend x/y/z
-torso_bend.rotation.x/y/z     -> torso.bend x/y/z
-```
-
-导出前插件会按当前 Blockbench 项目的父子关系和 pivot，把 `body`、`torso`、`*_bend` 等父级继承烘焙进 PAL 的平铺骨骼轨道里；因此龙核玩家模型版仍会导出为传统平铺 PAL 骨骼名。
-
-然后按选择导出：
-
-- `传统 PAL bend animations`：导出带 `bend` 字段的 animations JSON；
-- `Emotecraft / PAL emote`：在 PAL bend animations 的基础上继续转成 emote JSON。
-
-注意：emote 一次导出一个动画，请先在 Blockbench 中选中目标动画。
-
-## Python 用法
-
-### emote -> PAL bend animations
+All standalone converters live in `scripts/` and require Python 3.8+ (standard library only):
 
 ```bash
-python emote_to_animations.py input.emote.json output.animation.json --no-model-format
+# Convert a PAL / Emotecraft JSON into Blockbench player_model.geo animation JSON
+python scripts/emote_to_animations.py input.emote.json -o output.animation.json
+
+# Convert Blockbench player_model.geo helper-bend animation JSON back into PAL emote JSON
+python scripts/animations_to_emote.py input.animation.json -o output.emote.json
+
+# Convert traditional helper-bend tracks into PAL bend format
+python scripts/traditional_bend_to_pal_bend.py input.animation.json -o output_pal.animation.json
 ```
 
-### emote -> player_model.geo helper-bend animations
+## Development & Tests
+
+Run the automated contract suite (Node.js 20+):
 
 ```bash
-python emote_to_animations.py input.emote.json output.model.animation.json --model-format
+node --test tests/blender_contract.test.cjs
 ```
 
-不加 `--model-format` / `--no-model-format` 时，脚本会在交互式终端里询问是否转换为 `player_model.geo.json` 可用格式。
+## Documentation (Wiki)
 
-### PAL bend / helper-bend animations -> emote
+- [Home](https://github.com/kltyton/Pal-bend-player-tools/wiki)
+- [Getting Started](https://github.com/kltyton/Pal-bend-player-tools/wiki/Getting-Started)
+- [Player Rigs & Bend Conventions](https://github.com/kltyton/Pal-bend-player-tools/wiki/Player-Rigs-and-Bend-Conventions)
+- [Import, Export & MoreRotation](https://github.com/kltyton/Pal-bend-player-tools/wiki/Import-Export-and-MoreRotation)
+- [AnimCue Studio Integration](https://github.com/kltyton/Pal-bend-player-tools/wiki/AnimCue-Studio-Integration)
+- [Blender & Python Workflow](https://github.com/kltyton/Pal-bend-player-tools/wiki/Blender-and-Python-Workflow)
+- [Troubleshooting](https://github.com/kltyton/Pal-bend-player-tools/wiki/Troubleshooting)
 
-```bash
-python animations_to_emote.py input.animation.json output.emote.json --name animation_name
-```
+## License
 
-如果输入里检测到 `*_bend` helper 骨骼，脚本会自动先按 `player_model.geo` 模型格式转成 PAL bend。
-
-### helper-bend animations -> PAL bend animations
-
-```bash
-python traditional_bend_to_pal_bend.py input.model.animation.json output.pal_bend.animation.json --no-catmullrom
-```
-
-如果希望缺少插值信息的 bend 关键帧补成 `catmullrom`：
-
-```bash
-python traditional_bend_to_pal_bend.py input.model.animation.json output.pal_bend.animation.json --catmullrom
-```
-
-## 注意
-
-这些脚本按 PAL loader 的语义做转换：rotation/bend 常量在 animations 中以度数保存，进入 PAL 后会变成弧度；emote 默认输出 `version=3` 和 `easeBeforeKeyframe=true`，避免旧 emote easing 位移造成的偏差。
+- The Blockbench plugin, models, Python converters, and tests are licensed under the [MIT License](LICENSE).
+- Files directly under [`blender/`](blender/UPSTREAM.md) (excluding `blender/legacy/`) are an unmodified snapshot of [KosmX/emotes](https://github.com/KosmX/emotes) and remain under their upstream [GPL-3.0 License](blender/LICENSE).
